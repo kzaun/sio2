@@ -2,6 +2,8 @@ package sio2
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/urfave/cli/v2"
@@ -22,16 +24,50 @@ func NewReadCommand(db *leveldb.DB) *cli.Command {
 		Aliases: []string{ReadAliases},
 		Usage:   ReadUsage,
 		Action: func(cCtx *cli.Context) error {
-			iter := db.NewIterator(nil, nil)
-			for iter.Next() {
-				key := iter.Key()
-				value := iter.Value()
-				fmt.Println(string(key))
-				fmt.Println(string(value))
+			fileName := cCtx.Args().First()
+			_, err := os.Stat(fileName)
+			if err != nil {
+				log.Print("当前文件不存在")
+				return nil
 			}
 
-			fmt.Println("completed task: ", cCtx.Args().First())
+			data, dataErr := ReadExcel(fileName)
+			if dataErr != nil {
+				log.Print("当前文件读取失败")
+				return nil
+			}
+			iter := db.NewIterator(nil, nil)
+
+			for _, row := range data {
+				for _, colCell := range row {
+					for iter.Next() {
+
+						if string(iter.Key()) != colCell {
+							continue
+						}
+						key := iter.Key()
+						value := iter.Value()
+						fmt.Println(string(key))
+						fmt.Println(string(value))
+					}
+
+					fmt.Print(colCell, "\t")
+				}
+				fmt.Println()
+			}
+			fmt.Println("completed task: ", fileName)
 			return nil
 		},
 	}
+}
+
+func PathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }
