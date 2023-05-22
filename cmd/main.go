@@ -18,6 +18,7 @@ func main() {
 		sio2.NewDeleteCommand(db),
 		sio2.NewPutCommand(db),
 	}
+
 	app := &cli.App{
 		EnableBashCompletion: true,
 		Commands:             commands,
