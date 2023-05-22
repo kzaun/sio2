@@ -1,6 +1,8 @@
 package sio2
 
 import (
+	"fmt"
+
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/urfave/cli/v2"
 )
@@ -17,40 +19,7 @@ func NewReadCommand(db *leveldb.DB) *cli.Command {
 		Aliases: []string{ReadAliases},
 		Usage:   ReadUsage,
 		Action: func(cCtx *cli.Context) error {
-			// err := db.Update(func(tx *bolt.Tx) error {
-
-			// 	//2.通过Bucket()方法打开BlockBucket表
-			// 	b := tx.Bucket([]byte(TableName))
-			// 	//3.通过Put()方法往表里面存储数据
-			// 	if b != nil {
-			// 		err := b.Put([]byte("l"), []byte("Send $100 TO Bruce"))
-			// 		if err != nil {
-			// 			log.Panic("数据存储失败..")
-			// 		}
-			// 	}
-			// 	return nil
-			// })
-
-			// err = db.View(func(tx *bolt.Tx) error {
-
-			// 	//3.打开BlockBucket表，获取表对象
-
-			// 	b := tx.Bucket([]byte(TableName))
-			// 	//4.Get()方法通过key读取value
-			// 	if b != nil {
-			// 		data := b.Get([]byte("l"))
-			// 		fmt.Printf("%s\n", data)
-			// 		data = b.Get([]byte("ll"))
-			// 		fmt.Printf("%s\n", data)
-			// 	}
-			// 	// fmt.Println(b.Get([]byte("ll")))
-
-			// 	return nil
-			// })
-			// if err != nil {
-			// 	log.Panic(err)
-			// }
-			// fmt.Println("completed task: ", cCtx.Args().First())
+			fmt.Println("completed task: ", cCtx.Args().First())
 			return nil
 		},
 	}

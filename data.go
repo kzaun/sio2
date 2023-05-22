@@ -21,7 +21,6 @@ func (meta *MetaData) Serialize() []byte {
 	if err != nil {
 		log.Panic(err)
 	}
-	//4.返回result的字节数组
 	return result.Bytes()
 }
 
