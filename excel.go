@@ -27,3 +27,7 @@ func ReadExcel(fileName string) (data [][]string, err error) {
 
 	return rows, nil
 }
+
+func ExportExcel() {
+
+}

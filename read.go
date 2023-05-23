@@ -1,10 +1,6 @@
 package sio2
 
 import (
-	"fmt"
-	"log"
-	"os"
-
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/urfave/cli/v2"
 )
@@ -23,51 +19,63 @@ func NewReadCommand(db *leveldb.DB) *cli.Command {
 		Name:    ReadCommand,
 		Aliases: []string{ReadAliases},
 		Usage:   ReadUsage,
-		Action: func(cCtx *cli.Context) error {
-			fileName := cCtx.Args().First()
-			_, err := os.Stat(fileName)
-			if err != nil {
-				log.Print("当前文件不存在")
-				return nil
-			}
+		// Action: func(cCtx *cli.Context) error {
+		// 	fileName := cCtx.Args().First()
+		// 	fileData, err := os.Stat(fileName)
+		// 	if err != nil {
+		// 		log.Print("当前文件不存在")
+		// 		return nil
+		// 	}
 
-			data, dataErr := ReadExcel(fileName)
-			if dataErr != nil {
-				log.Print("当前文件读取失败")
-				return nil
-			}
-			iter := db.NewIterator(nil, nil)
+		// 	path, f := filepath.Split(fileName)
 
-			for _, row := range data {
-				for _, colCell := range row {
-					for iter.Next() {
+		// 	fmt.Println(path)
+		// 	fmt.Println(f)
+		// 	data, dataErr := ReadExcel(fileName)
+		// 	if dataErr != nil {
+		// 		log.Print("当前文件读取失败")
+		// 		return nil
+		// 	}
+		// 	// iter := db.NewIterator(nil, nil)
+		// 	numbers := []string{}
+		// 	i := 1
+		// 	for _, row := range data {
+		// 		for _, colCell := range row {
+		// 			numbers = append(numbers, colCell)
+		// 			// data := &MetaData{
+		// 			// 	Created:  time.Now(),
+		// 			// 	FileName: fileData.Name(),
+		// 			// 	FilePath: path,
+		// 			// 	FileSize: fileData.Size(),
+		// 			// }
+		// 			// dataByte := data.Serialize()
+		// 			// err = db.Put([]byte(colCell), dataByte, nil)
+		// 			// if err != nil {
+		// 			// 	return nil
+		// 			// }
+		// 			// for iter.Next() {
 
-						if string(iter.Key()) != colCell {
-							continue
-						}
-						key := iter.Key()
-						value := iter.Value()
-						fmt.Println(string(key))
-						fmt.Println(string(value))
-					}
+		// 			// 	if string(iter.Key()) != colCell {
+		// 			// 		continue
+		// 			// 	}
+		// 			// 	key := iter.Key()
+		// 			// 	value := iter.Value()
+		// 			// 	fmt.Println(string(key))
+		// 			// 	fmt.Println(string(value))
+		// 			// }
 
-					fmt.Print(colCell, "\t")
-				}
-				fmt.Println()
-			}
-			fmt.Println("completed task: ", fileName)
-			return nil
-		},
+		// 			fmt.Print(colCell, "\t")
+		// 		}
+		// 		fmt.Println()
+		// 	}
+
+		// 	// for _, v := range numbers {
+
+		// 	// }
+		// 	i++
+
+		// 	fmt.Println("completed task: ", fileName)
+		// 	return nil
+		// },
 	}
-}
-
-func PathExists(path string) (bool, error) {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true, nil
-	}
-	if os.IsNotExist(err) {
-		return false, nil
-	}
-	return false, err
 }

@@ -8,10 +8,10 @@ import (
 )
 
 type MetaData struct {
-	FileSize int
+	FileSize int64
 	FileName string
 	FilePath string
-	Created  time.Duration
+	Created  time.Time
 }
 
 func (meta *MetaData) Serialize() []byte {
