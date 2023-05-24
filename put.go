@@ -51,7 +51,7 @@ func NewPutCommand(db *leveldb.DB) *cli.Command {
 			ch1 := make(chan string)
 			go func(meth []string) {
 				for _, v := range meth {
-					ch1 <- v
+					ch1 <- strings.Trim(v, " ")
 				}
 				close(ch1)
 			}(sorts)
