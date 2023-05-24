@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/syndtr/goleveldb/leveldb"
@@ -23,7 +24,7 @@ func NewPutCommand(db *leveldb.DB) *cli.Command {
 		Aliases: []string{PutAliases},
 		Usage:   PutUsage,
 		Action: func(cCtx *cli.Context) error {
-			fileName := cCtx.Args().First()
+			fileName := strings.Trim(cCtx.Args().First(), " ")
 			fileData, err := os.Stat(fileName)
 			if err != nil {
 				log.Print("当前文件不存在")
