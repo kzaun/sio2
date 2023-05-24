@@ -29,7 +29,6 @@ func NewPutCommand(db *leveldb.DB) *cli.Command {
 				log.Print("当前文件不存在")
 				return nil
 			}
-
 			path, _ := filepath.Split(fileName)
 			data, dataErr := ReadExcel(fileName)
 			if dataErr != nil {
@@ -48,32 +47,30 @@ func NewPutCommand(db *leveldb.DB) *cli.Command {
 				return nil
 			}
 			sorts := removeDuplication_map(numbers)
-
-			iter := db.NewIterator(nil, nil)
-		re:
-			for _, v := range sorts {
-				for iter.Next() {
-					if string(iter.Key()) != v {
-						data := &MetaData{
-							Created:  time.Now().Unix(),
-							FileName: fileData.Name(),
-							FilePath: path,
-							FileSize: fileData.Size(),
-						}
-						dataByte := data.Serialize()
-						err = db.Put([]byte(v), dataByte, nil)
-						if err != nil {
-							return nil
-						}
-						fmt.Printf("号码：%v 成功存储 \n", v)
-						break re
-					} else {
-						fmt.Printf("号码：%v 当前数据已经存在 \n", v)
-						break re
+			ch1 := make(chan string)
+			go func(meth []string) {
+				for _, v := range meth {
+					ch1 <- v
+				}
+				close(ch1)
+			}(sorts)
+			for v := range ch1 {
+				if ok, _ := db.Has([]byte(v), nil); !ok {
+					data := &MetaData{
+						Created:  time.Now().Unix(),
+						FileName: fileData.Name(),
+						FilePath: path,
+						FileSize: fileData.Size(),
+						Mobile:   v,
+						FullName: fileName,
 					}
+					dataByte := data.Serialize()
+					_ = db.Put([]byte(v), dataByte, nil)
+					fmt.Printf("号码：%v 成功存储 \n", v)
+				} else {
+					fmt.Printf("当前%v \n", v)
 				}
 			}
-
 			return nil
 		},
 	}

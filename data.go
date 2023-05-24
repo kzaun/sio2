@@ -11,6 +11,8 @@ type MetaData struct {
 	FileName string
 	FilePath string
 	Created  int64
+	Mobile   string
+	FullName string
 }
 
 func (meta *MetaData) Serialize() []byte {
