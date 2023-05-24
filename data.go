@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"encoding/gob"
 	"log"
-	"time"
 )
 
 type MetaData struct {
 	FileSize int64
 	FileName string
 	FilePath string
-	Created  time.Time
+	Created  int64
 }
 
 func (meta *MetaData) Serialize() []byte {
@@ -32,4 +31,29 @@ func DeserializeBlock(data []byte) *MetaData {
 		log.Panic(err)
 	}
 	return &meta
+}
+
+func removeDuplication_map(arr []string) []string {
+	set := make(map[string]struct{}, len(arr))
+	j := 0
+	for _, v := range arr {
+		_, ok := set[v]
+		if ok {
+			continue
+		}
+		set[v] = struct{}{}
+		arr[j] = v
+		j++
+	}
+
+	return arr[:j]
+}
+func inArray(n int, f func(int) bool) bool {
+
+	for i := 0; i < n; i++ {
+		if f(i) {
+			return true
+		}
+	}
+	return false
 }

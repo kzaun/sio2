@@ -13,5 +13,3 @@ func NewDB(dbName string) *leveldb.DB {
 	}
 	return db
 }
-
-const TableName = "sio2"
